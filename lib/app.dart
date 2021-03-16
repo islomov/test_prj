@@ -22,8 +22,7 @@ class App extends StatelessWidget {
 
   PageRoute<T> _pageRouteBuilder<T>(
     RouteSettings settings,
-    WidgetBuilder builder,
-  ) =>
+    WidgetBuilder builder,) =>
       PageRouteBuilder(
         settings: settings,
         transitionDuration: Duration.zero,
