@@ -7,9 +7,10 @@ import 'package:test_prj/constant/texts.dart';
 import '../constant/colors.dart';
 
 class Screen1 extends StatelessWidget {
-  const Screen1({Key key}) : super(key: key);
+  Screen1({Key key}) : super(key: key);
 
   static const routeName = '/screen_1';
+  ScrollController _scrollController = new ScrollController();
 
   @override
   Widget build(BuildContext context) {
@@ -20,8 +21,8 @@ class Screen1 extends StatelessWidget {
           margin: const EdgeInsets.all(ProjectSpacing.spacing20),
           decoration: const BoxDecoration(
               color: ProjectColor.white,
-              borderRadius: const BorderRadius.all(
-                  Radius.circular(ProjectSpacing.spacing20))),
+              borderRadius:
+                  BorderRadius.all(Radius.circular(ProjectSpacing.spacing20))),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -35,17 +36,26 @@ class Screen1 extends StatelessWidget {
                     children: [
                       Container(
                           alignment: Alignment.topRight,
-                          margin: EdgeInsets.fromLTRB(0, 5, 10, 0),
+                          margin: const EdgeInsets.fromLTRB(
+                              ProjectSpacing.spacing0,
+                              ProjectSpacing.spacing5,
+                              ProjectSpacing.spacing10,
+                              ProjectSpacing.spacing0),
                           child: Material(
                             color: ProjectColor.white,
-                            child: InkWell(
-                              onTap: () {
+                            child: IconButton(
+                              icon: const Icon(Icons.close),
+                              onPressed: () {
                                 Navigator.pop(context);
                               },
-                              child: const Icon(Icons.close),
                             ),
                           )),
                       Container(
+                        margin: EdgeInsets.fromLTRB(
+                            ProjectSpacing.spacing0,
+                            ProjectSpacing.spacing10,
+                            ProjectSpacing.spacing0,
+                            ProjectSpacing.spacing0),
                         alignment: Alignment.topCenter,
                         child: const Text(
                           ProjectText.screen1_title,
@@ -76,20 +86,26 @@ class Screen1 extends StatelessWidget {
               Container(
                 height: ProjectSpacing.spacing400,
                 color: ProjectColor.grey.withOpacity(ProjectSpacing.spacing08),
-                child: const SingleChildScrollView(
-                  padding: EdgeInsets.all(ProjectSpacing.spacing10),
-                  child: Text(
-                    ProjectText.screen1_desc,
-                    style: TextStyle(color: ProjectColor.black),
+                child:Scrollbar(
+                  controller: _scrollController,
+                  isAlwaysShown:true,
+                  child:  SingleChildScrollView(
+                    // ignore: lines_longer_than_80_chars
+                    controller: _scrollController, // <---- Same as the Scrollbar controller
+                    padding: EdgeInsets.all(ProjectSpacing.spacing10),
+                    child: Text(
+                      ProjectText.screen1_desc,
+                      style: TextStyle(color: ProjectColor.black),
+                    ),
                   ),
                 ),
               ),
               Container(
                 margin: const EdgeInsets.fromLTRB(
                     ProjectSpacing.spacing0,
-                    ProjectSpacing.spacing10,
+                    ProjectSpacing.spacing20,
                     ProjectSpacing.spacing0,
-                    ProjectSpacing.spacing10),
+                    ProjectSpacing.spacing20),
                 child: RaisedButton(
                   padding: const EdgeInsets.fromLTRB(
                       ProjectSpacing.spacing20,
