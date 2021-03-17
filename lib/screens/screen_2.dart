@@ -6,46 +6,79 @@ import 'package:provider/provider.dart';
 import '../constant/colors.dart';
 import '../constant/font_size.dart';
 import '../constant/spacing.dart';
-import '../constant/texts.dart';
 import '../providers/horizontal_items.dart';
 import '../providers/vertical_items.dart';
 
-class Screen2 extends StatelessWidget {
-  const Screen2({Key key}) : super(key: key);
+class Screen2 extends StatefulWidget {
+  Screen2({Key key}) : super(key: key);
 
   static const routeName = '/screen_2';
 
   @override
-  Widget build(BuildContext context) {
-    return InnerWidget();
-  }
-}
-
-class InnerWidget extends StatefulWidget {
-  InnerWidget({Key key}) : super(key: key);
-
-  @override
   State<StatefulWidget> createState() {
-    return _InnerWidgetState();
+    return _Screen2State();
   }
+
 }
 
-class _InnerWidgetState extends State<InnerWidget> {
-
-  HorizontalItemsProvider _horizontalDataProvider;
-  VerticalItemsProvider _verticalDataProvider;
-  double _cardWidth;
+class _Screen2State extends State<Screen2>{
+  HorizontalItemsProvider _horizontalItemsProvider;
+  VerticalItemsProvider _verticalItemsProvider;
 
   @override
   void initState() {
-    _cardWidth = MediaQuery.of(context).size.width - 72;
-    _horizontalDataProvider = Provider.of<HorizontalItemsProvider>(context);
-    _verticalDataProvider = Provider.of<VerticalItemsProvider>(context);
     super.initState();
+    _horizontalItemsProvider = HorizontalItemsProvider();
+    _verticalItemsProvider = VerticalItemsProvider();
   }
 
   @override
   Widget build(BuildContext context) {
+    return MultiProvider(
+      providers: [
+        // Why I moved code from App widget to Screen2 widget.
+        // Because, App widget is initiated once when we enter the app.
+        // I first implemented in a way when Providers was provided in App widget,
+        // and I disposed those providers in Screen2 widget. But when you reenter the screen2 again,
+        // exception was thrown because,one instance of provider was used again. You can't reuse disposed providers.
+
+        // This implementation helps me to avoid reusing providers again.
+        // In project description there was no any note about reusing provider, or creating new provider.
+        // I know using ChangeNotifierProvider.value(value:_horizontalItemsProvider)
+        // in build method could lead into memory leaks but not disposing provider also lead to memory leak(timer is also not stopped)
+        // In both cases, I will be in memory leak problem.
+        // https://pub.dev/documentation/provider/latest/provider/ChangeNotifierProvider-class.html
+        // Why I choosed this way of implementation is because, this will not lead any exceptions related to dispoing.
+
+        ChangeNotifierProvider.value(
+            value:_horizontalItemsProvider
+        ),
+        ChangeNotifierProvider.value(
+          value: _verticalItemsProvider,
+        ),
+      ],
+      child: InnerWidget(),
+    );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    // in order to avoid memory leaks.
+    _horizontalItemsProvider.dispose();
+    _verticalItemsProvider.dispose();
+  }
+}
+
+class InnerWidget extends StatelessWidget {
+  InnerWidget({Key key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    var _cardWidth = MediaQuery.of(context).size.width - 72;
+
+    var _horizontalDataProvider = Provider.of<HorizontalItemsProvider>(context);
+    var _verticalDataProvider = Provider.of<VerticalItemsProvider>(context);
     return Container(
       color: ProjectColor.white,
       child: Column(
@@ -70,7 +103,8 @@ class _InnerWidgetState extends State<InnerWidget> {
           Container(
             margin: const EdgeInsets.all(ProjectSpacing.spacing10),
             child: Text(
-              "Section 1 (${_horizontalDataProvider.itemsCount})",
+              "Section 1 (${_horizontalDataProvider == null
+                  ? 0 :_horizontalDataProvider.itemsCount})",
               textAlign: TextAlign.start,
               style: const TextStyle(
                   color: ProjectColor.black,
@@ -87,8 +121,12 @@ class _InnerWidgetState extends State<InnerWidget> {
                 ProjectSpacing.spacing0),
             child: ListView.builder(
                 scrollDirection: Axis.horizontal,
-                itemCount: _horizontalDataProvider.itemsCount,
+                itemCount: _horizontalDataProvider == null
+                    ? 0 :_horizontalDataProvider.itemsCount ,
                 itemBuilder: (context, index) {
+                  if(_horizontalDataProvider==null){
+                    return Container();
+                  }
                   return Container(
                     width: _cardWidth,
                     height: ProjectSpacing.spacing120,
@@ -115,7 +153,8 @@ class _InnerWidgetState extends State<InnerWidget> {
           Container(
             margin: const EdgeInsets.all(ProjectSpacing.spacing10),
             child: Text(
-              "Section 2 (${_verticalDataProvider.itemsCount})",
+              "Section 2 (${_verticalDataProvider == null
+                  ? 0 :_verticalDataProvider.itemsCount})",
               textAlign: TextAlign.start,
               style: const TextStyle(
                   color: ProjectColor.black,
@@ -127,8 +166,12 @@ class _InnerWidgetState extends State<InnerWidget> {
             child: Container(
               child: ListView.builder(
                   padding: const EdgeInsets.all(ProjectSpacing.spacing8),
-                  itemCount: _verticalDataProvider.itemsCount,
+                  itemCount: _verticalDataProvider == null
+                      ? 0 :_verticalDataProvider.itemsCount,
                   itemBuilder: (context, index) {
+                    if(_verticalDataProvider==null) {
+                      return Container();
+                    }
                     return Container(
                       height: ProjectSpacing.spacing120,
                       margin: const EdgeInsets.fromLTRB(
@@ -155,13 +198,5 @@ class _InnerWidgetState extends State<InnerWidget> {
       ),
     );
   }
-
-  @override
-  void dispose() {
-    if (_horizontalDataProvider != null && _verticalDataProvider != null) {
-      _horizontalDataProvider.dispose();
-      _verticalDataProvider.dispose();
-    }
-    super.dispose();
-  }
 }
+

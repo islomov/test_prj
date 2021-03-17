@@ -16,17 +16,5 @@ void main() => runZonedGuarded(
     );
 
 void _run() => runApp(
-      MultiProvider(
-        providers: [
-          ChangeNotifierProvider(
-            create: (context) => HorizontalItemsProvider(),
-            lazy: false,
-          ),
-          ChangeNotifierProvider(
-            create: (context) => VerticalItemsProvider(),
-            lazy: false,
-          ),
-        ],
-        child: const App(),
-      ),
+      const App(),
     );
