@@ -13,8 +13,9 @@ class ProjectSpacing{
 
 
   static const spacing400 = 400.0;
+  static const spacing200 = 200.0;
   static const spacing120 = 120.0;
-  static const spacing08 = 0.8;
+  static const spacing065 = 0.3;
   static const spacing18 = 18.0;
   static const spacing0 = 0.0;
 
