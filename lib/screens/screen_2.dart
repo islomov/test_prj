@@ -75,128 +75,130 @@ class InnerWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var _cardWidth = MediaQuery.of(context).size.width - 72;
 
     var _horizontalDataProvider = Provider.of<HorizontalItemsProvider>(context);
     var _verticalDataProvider = Provider.of<VerticalItemsProvider>(context);
-    return Container(
-      color: ProjectColor.white,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Container(
-              alignment: Alignment.topRight,
+    return LayoutBuilder(builder: (context,constraints){
+      var _cardWidth = constraints.maxWidth - 72;
+      return Container(
+        color: ProjectColor.white,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Container(
+                alignment: Alignment.topRight,
+                margin: const EdgeInsets.fromLTRB(
+                    ProjectSpacing.spacing0,
+                    ProjectSpacing.spacing45,
+                    ProjectSpacing.spacing0,
+                    ProjectSpacing.spacing0),
+                child: Material(
+                  color: Colors.transparent,
+                  child: IconButton(
+                    icon: const Icon(CupertinoIcons.clear),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                  ),
+                )),
+            Container(
+              margin: const EdgeInsets.all(ProjectSpacing.spacing10),
+              child: Text(
+                "Section 1 (${_horizontalDataProvider == null
+                    ? 0 :_horizontalDataProvider.itemsCount})",
+                textAlign: TextAlign.start,
+                style: const TextStyle(
+                    color: ProjectColor.black,
+                    fontWeight: FontWeight.bold,
+                    fontSize: ProjectFont.font20),
+              ),
+            ),
+            Container(
+              height: ProjectSpacing.spacing120,
               margin: const EdgeInsets.fromLTRB(
+                  ProjectSpacing.spacing26,
                   ProjectSpacing.spacing0,
-                  ProjectSpacing.spacing45,
                   ProjectSpacing.spacing0,
                   ProjectSpacing.spacing0),
-              child: Material(
-                color: Colors.transparent,
-                child: IconButton(
-                  icon: const Icon(CupertinoIcons.clear),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                ),
-              )),
-          Container(
-            margin: const EdgeInsets.all(ProjectSpacing.spacing10),
-            child: Text(
-              "Section 1 (${_horizontalDataProvider == null
-                  ? 0 :_horizontalDataProvider.itemsCount})",
-              textAlign: TextAlign.start,
-              style: const TextStyle(
-                  color: ProjectColor.black,
-                  fontWeight: FontWeight.bold,
-                  fontSize: ProjectFont.font20),
-            ),
-          ),
-          Container(
-            height: ProjectSpacing.spacing120,
-            margin: const EdgeInsets.fromLTRB(
-                ProjectSpacing.spacing26,
-                ProjectSpacing.spacing0,
-                ProjectSpacing.spacing0,
-                ProjectSpacing.spacing0),
-            child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: _horizontalDataProvider == null
-                    ? 0 :_horizontalDataProvider.itemsCount ,
-                itemBuilder: (context, index) {
-                  if(_horizontalDataProvider==null){
-                    return Container();
-                  }
-                  return Container(
-                    width: _cardWidth,
-                    height: ProjectSpacing.spacing120,
-                    margin: const EdgeInsets.fromLTRB(
-                        ProjectSpacing.spacing5,
-                        ProjectSpacing.spacing0,
-                        ProjectSpacing.spacing5,
-                        ProjectSpacing.spacing0),
-                    child: Card(
-                      elevation: 5,
-                      child: Center(
-                        child: Text(
-                          _horizontalDataProvider.generateItemAt(index + 1),
-                          style: const TextStyle(
-                              color: ProjectColor.black,
-                              fontWeight: FontWeight.bold,
-                              fontSize: ProjectFont.font20),
-                        ),
-                      ),
-                    ),
-                  );
-                }),
-          ),
-          Container(
-            margin: const EdgeInsets.all(ProjectSpacing.spacing10),
-            child: Text(
-              "Section 2 (${_verticalDataProvider == null
-                  ? 0 :_verticalDataProvider.itemsCount})",
-              textAlign: TextAlign.start,
-              style: const TextStyle(
-                  color: ProjectColor.black,
-                  fontWeight: FontWeight.bold,
-                  fontSize: ProjectFont.font20),
-            ),
-          ),
-          Expanded(
-            child: Container(
               child: ListView.builder(
-                  padding: const EdgeInsets.all(ProjectSpacing.spacing8),
-                  itemCount: _verticalDataProvider == null
-                      ? 0 :_verticalDataProvider.itemsCount,
+                  scrollDirection: Axis.horizontal,
+                  itemCount: _horizontalDataProvider == null
+                      ? 0 :_horizontalDataProvider.itemsCount ,
                   itemBuilder: (context, index) {
-                    if(_verticalDataProvider==null) {
+                    if(_horizontalDataProvider==null){
                       return Container();
                     }
                     return Container(
+                      width: _cardWidth,
                       height: ProjectSpacing.spacing120,
                       margin: const EdgeInsets.fromLTRB(
-                          ProjectSpacing.spacing18,
                           ProjectSpacing.spacing5,
-                          ProjectSpacing.spacing18,
-                          ProjectSpacing.spacing5),
+                          ProjectSpacing.spacing0,
+                          ProjectSpacing.spacing5,
+                          ProjectSpacing.spacing0),
                       child: Card(
                         elevation: 5,
                         child: Center(
                           child: Text(
-                              _verticalDataProvider.generateItemAt(index + 1),
-                              style: const TextStyle(
-                                  color: ProjectColor.black,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: ProjectFont.font20)),
+                            _horizontalDataProvider.generateItemAt(index + 1),
+                            style: const TextStyle(
+                                color: ProjectColor.black,
+                                fontWeight: FontWeight.bold,
+                                fontSize: ProjectFont.font20),
+                          ),
                         ),
                       ),
                     );
                   }),
             ),
-          )
-        ],
-      ),
-    );
+            Container(
+              margin: const EdgeInsets.all(ProjectSpacing.spacing10),
+              child: Text(
+                "Section 2 (${_verticalDataProvider == null
+                    ? 0 :_verticalDataProvider.itemsCount})",
+                textAlign: TextAlign.start,
+                style: const TextStyle(
+                    color: ProjectColor.black,
+                    fontWeight: FontWeight.bold,
+                    fontSize: ProjectFont.font20),
+              ),
+            ),
+            Expanded(
+              child: Container(
+                child: ListView.builder(
+                    padding: const EdgeInsets.all(ProjectSpacing.spacing8),
+                    itemCount: _verticalDataProvider == null
+                        ? 0 :_verticalDataProvider.itemsCount,
+                    itemBuilder: (context, index) {
+                      if(_verticalDataProvider==null) {
+                        return Container();
+                      }
+                      return Container(
+                        height: ProjectSpacing.spacing120,
+                        margin: const EdgeInsets.fromLTRB(
+                            ProjectSpacing.spacing18,
+                            ProjectSpacing.spacing5,
+                            ProjectSpacing.spacing18,
+                            ProjectSpacing.spacing5),
+                        child: Card(
+                          elevation: 5,
+                          child: Center(
+                            child: Text(
+                                _verticalDataProvider.generateItemAt(index + 1),
+                                style: const TextStyle(
+                                    color: ProjectColor.black,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: ProjectFont.font20)),
+                          ),
+                        ),
+                      );
+                    }),
+              ),
+            )
+          ],
+        ),
+      );
+    });
   }
 }
 
